@@ -2,7 +2,6 @@ import numpy
 import matplotlib.pyplot as plot
 import matplotlib.mlab as mlab
 
-
 def get_univariant_deviation_prob(mean, x):
     return 1 / (numpy.sqrt(2 * numpy.pi)) * numpy.exp(-1 * numpy.power((x - mean), 2) / 2)
 
