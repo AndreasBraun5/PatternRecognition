@@ -1,5 +1,8 @@
 import operator
 import numpy
+import matplotlib.cm as cm
+import matplotlib.pyplot as plot
+
 from functools import reduce
 
 def readSamplesFromFile(fileName):
@@ -18,11 +21,17 @@ def readSamplesFromFile(fileName):
 def function():
     samples = readSamplesFromFile('ue10b_samples.txt')
     for count in range(2, 6):
-        result = iterativeOptimalClustering(count, samples)
+        result = bottomUpDMeanClustering(count, samples)
         print(result)
+        for i, cluster in result.items():
+            xs = [elem[0] for elem in cluster]
+            ys = [elem[1] for elem in cluster]
+            plot.scatter(xs, ys)
+        #plot.show()
+        plot.savefig('bottomupdmean' + str(count) + '.png')
 
 
-def iterativeOptimalClustering(countClasses, samples):
+def bottomUpDMeanClustering(countClasses, samples):
     n = len(samples)
 
     cStar = n
@@ -44,7 +53,7 @@ def iterativeOptimalClustering(countClasses, samples):
                 if i == j:
                     continue
 
-                curJ = sumSquaredError(Di, Dj)
+                curJ = distance(i, j, clusters)
                 if curJ < jMin:
                     D_i = Di
                     D_j = Dj
@@ -67,13 +76,12 @@ def iterativeOptimalClustering(countClasses, samples):
         if countClasses == cStar:
             break
 
-
     return clusters
 
-def sumSquaredError(cluster1, cluster2):
-    squaredError1 = squaredError(cluster1)
-    squaredError2 = squaredError(cluster2)
-    return squaredError1 + squaredError2
+def distance(clusterI, clusterJ, clusters):
+    cluster1 = clusters[clusterI]
+    cluster2 = clusters[clusterJ]
+    return abs([x - y for x, y in zip(mean(cluster1), mean(cluster2))])
 
 def mean(cluster):
     total = None
@@ -82,19 +90,11 @@ def mean(cluster):
             total = sample
         else:
             total = [x + y for x, y in zip(total, sample)]
-    ret = 0
-    for x in total:
-        ret += (x / len(cluster))
-    return ret
+    return [x / len(cluster) for x in total]
 
-def squaredError(cluster):
-    m = mean(cluster)
-    total = 0
-    for sample in cluster:
-        sampleMinusMean = [x - m for x in sample]
-        sampleMinusMeanSquared = map(operator.mul, sampleMinusMean, sampleMinusMean)
-        total += reduce(operator.add, sampleMinusMeanSquared)
-    return total
+def abs(vector):
+    elemSquared = [x * x for x in vector]
+    return numpy.sqrt(reduce(operator.add, elemSquared))
 
 if __name__ == "__main__":
     function()
