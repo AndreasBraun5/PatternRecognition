@@ -28,6 +28,7 @@ def function():
             ys = [elem[1] for elem in cluster]
             plot.scatter(xs, ys)
         #plot.show()
+        plot.title('bottomupdmean' + str(count))
         plot.savefig('bottomupdmean' + str(count) + '.png')
 
 

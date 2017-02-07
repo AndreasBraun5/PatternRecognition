@@ -27,6 +27,7 @@ def function():
             xs = [elem[0] for elem in cluster]
             ys = [elem[1] for elem in cluster]
             plot.scatter(xs, ys)
+        plot.title('iterative' + str(count))
         plot.savefig('iterative' + str(count) + '.png')
 
 

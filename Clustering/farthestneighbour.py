@@ -28,6 +28,7 @@ def function():
             ys = [elem[1] for elem in cluster]
             plot.scatter(xs, ys)
         #plot.show()
+        plot.title('farthestNeighbour' + str(count))
         plot.savefig('farthestneighbour' + str(count) + '.png')
 
 
